@@ -1,21 +1,23 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {UserService} from './user.service';
+import {SwitchCounterService} from './switch.counter.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   activeUsers = ['Max', 'Anna'];
   inactiveUsers = ['Chris', 'Manu'];
+  switchesCount: number;
 
-  onSetToInactive(id: number) {
-    this.inactiveUsers.push(this.activeUsers[id]);
-    this.activeUsers.splice(id, 1);
-  }
+  constructor(private userService: UserService, private switchCounterService: SwitchCounterService) {}
 
-  onSetToActive(id: number) {
-    this.activeUsers.push(this.inactiveUsers[id]);
-    this.inactiveUsers.splice(id, 1);
+  ngOnInit(): void {
+    this.activeUsers = this.userService.activeUsers;
+    this.inactiveUsers = this.userService.inactiveUsers;
+    this.switchesCount = this.switchCounterService.switchesCount;
+    this.switchCounterService.switchCountChanged.subscribe((newValue: number) => this.switchesCount = newValue);
   }
 }
